@@ -1,0 +1,36 @@
+version: '3'
+services:
+    web:
+        restart: always
+        image: nginx:latest
+        ports:
+            - "8080:80"
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+            - ./:/php_rest_api
+        links:
+            - mysql
+            - php
+    php:
+        image: php:7.4-fpm
+        volumes:
+            - ./:/php_rest_api
+        build: .
+        links:
+            - mysql
+
+    mysql:
+        image: mysql:latest
+        restart: always
+        tty: true
+        ports:
+            - "3306:3306"
+        environment:
+            - MYSQL_DATABASE=rest_api
+            - MYSQL_ROOT_PASSWORD=password
+            - MYSQL_USER=mysql
+            - MYSQL_PASSWORD=password
+            - MYSQL_TCP_PORT=3306
+        volumes:
+            - ./dbdata:/var/lib/mysql
+            - ./docker-init-queries.sql:/docker-entrypoint-initdb.d/init.sql
