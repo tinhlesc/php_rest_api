@@ -26,5 +26,5 @@ INSERT INTO `rest_api`.`user` (`id`, `username`, `lastname`, `firstname`, `passw
 
 ## Run api
 ```
-GET: php_rest_api.local/users?limit=20
+GET: php_rest_api.local:8080/user?limit=20
 ```
