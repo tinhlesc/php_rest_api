@@ -6,7 +6,7 @@ class BaseController
     const HTTP_CREATED = 201;
     const HTTP_NO_CONTENT = 204;
     const HTTP_BAD_REQUEST = 400;
-    const HTTP_NOT_FOUND = 400;
+    const HTTP_NOT_FOUND = 404;
     const HTTP_INTERNAL_SERVER_ERROR = 500;
     /**
      * __call magic method.
@@ -48,7 +48,7 @@ class BaseController
     {
         header_remove('Set-Cookie');
         header('Content-Type: application/json');
-        header('HTTP/1.1 '.$statusCode);
+        header('HTTP/1.1 ' . $statusCode);
 
         echo $data;
         exit;
@@ -59,6 +59,6 @@ class BaseController
      */
     protected function log(string $content)
     {
-        file_put_contents('var/log_'.date("j.n.Y").'.log', $content, FILE_APPEND);
+        file_put_contents('var/log_' . date("j.n.Y") . '.log', $content, FILE_APPEND);
     }
 }

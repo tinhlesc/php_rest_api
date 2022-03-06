@@ -27,7 +27,6 @@ class UserController extends BaseController
             $responseData = json_encode($arrUsers);
 
             $this->sendOutput($responseData);
-
         } catch (\Exception $e) {
             $this->log($e->getMessage());
             $strErrorDesc = 'Something went wrong! Please contact support.';

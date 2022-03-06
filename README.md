@@ -24,6 +24,16 @@ INSERT INTO `rest_api`.`user` (`id`, `username`, `lastname`, `firstname`, `passw
 - 127.0.0.1 php_rest_api.local
 ```
 
+## Run PHPStan
+```
+./vendor/bin/phpstan analyse --memory-limit=512M -l 1 Controller inc Model
+```
+
+## Run PHPCS
+```
+./vendor/bin/phpcbf --standard=PSR2 . 
+```
+
 ## Run api
 ```
 GET: php_rest_api.local:8080/user?limit=20

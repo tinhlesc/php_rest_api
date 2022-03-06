@@ -1,4 +1,5 @@
 <?php
+
     const DB_HOST = 'mysql';
     const DB_USERNAME = 'root';
     const DB_PASSWORD = 'password';
