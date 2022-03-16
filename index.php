@@ -26,6 +26,6 @@ switch ($requestMethod) {
         $action = 'get';
 }
 
-$objFeedController = new UserController(new UserModel());
-$strMethodName = $action . 'Action';
-$objFeedController->{$strMethodName}();
+    $objFeedController = new UserController(new UserModel(), new UserValidation());
+    $strMethodName = $action . 'Action';
+    $objFeedController->{$strMethodName}();

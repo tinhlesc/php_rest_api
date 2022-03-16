@@ -5,9 +5,10 @@ class UserController extends BaseController
     protected $userModel = null;
     protected $userValidation = null;
 
-    public function __construct(UserModel $userModel)
+    public function __construct(UserModel $userModel, UserValidation $userValidation)
     {
         $this->userModel = $userModel;
+        $this->userValidation = $userValidation;
     }
 
     /**
@@ -61,4 +62,50 @@ class UserController extends BaseController
 
         $this->sendOutput(json_encode(['error' => $strErrorDesc]), self::HTTP_INTERNAL_SERVER_ERROR);
     }
+
+    /**
+     * Update of users
+     */
+    public function updateAction()
+    {
+        $strErrorDesc = '';
+        $arrUriSegments = $this->getUriSegments();
+        $updateData = $this->getObjectContent();
+
+        try {
+            $idUser = (isset($arrUriSegments[2])) ? $arrUriSegments[2] : 0;
+            $userById = $this->userModel->getUserByID($idUser);
+            if (!$userById) {
+                $this->sendOutput(json_encode(['error' => "User is not found!"]), self::HTTP_BAD_REQUEST);
+            }
+
+            $updateData['existUsername'] = false;
+            $username = (isset($updateData['username'])) ? $updateData['username'] : '';
+            if ($userById[0]['username'] != $username) {
+                $userByUsername = $this->userModel->getUserByUsername($username);
+                if ($userByUsername) {
+                    $updateData['existUsername'] = true;
+                }
+            }
+
+            $errorMessage = $this->userValidation->validateInput($updateData);
+            if ($errorMessage) {
+                $this->sendOutput(json_encode(['error' => $errorMessage]), self::HTTP_BAD_REQUEST);
+            }
+
+            $updateData['password'] = (isset($updateData['password'])) ? sha1($updateData['password']) : $userById[0]['password'];
+
+            $updateUser = $this->userModel->updateUser($idUser, $updateData);
+            if ($updateUser) {
+                $result['user'] = $this->userModel->getUserById($idUser);
+                $this->sendOutput(json_encode(['success' => $result['user']]), self::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            $this->log($e->getMessage());
+            $strErrorDesc = 'Something went wrong! Please contact support.';
+        }
+
+        $this->sendOutput(json_encode(['error' => $strErrorDesc]), self::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
 }

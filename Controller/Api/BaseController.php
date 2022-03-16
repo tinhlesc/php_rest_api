@@ -22,7 +22,7 @@ class BaseController
      *
      * @return array
      */
-    protected function getUriSegments()
+    protected function getUriSegments(): array
     {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $uri = explode('/', $uri);
@@ -61,5 +61,13 @@ class BaseController
     protected function log(string $content)
     {
         file_put_contents('var/log_' . date("j.n.Y") . '.log', $content, FILE_APPEND);
+    }
+
+    /**
+     * Get Object Content by Json decode.
+     */
+    protected function getObjectContent(): array
+    {
+        return (array) json_decode(file_get_contents('php://input'), true);
     }
 }

@@ -14,9 +14,9 @@ require_once PROJECT_ROOT_PATH . "/inc/config.php";
 require_once PROJECT_ROOT_PATH . "/Model/Database.php";
 require_once PROJECT_ROOT_PATH . "/Model/UserModel.php";
 
-// include validation file
-require_once PROJECT_ROOT_PATH . "/Validations/UserValidation.php";
-
 // include the base controller file
 require_once PROJECT_ROOT_PATH . "/Controller/Api/BaseController.php";
 require_once PROJECT_ROOT_PATH . "/Controller/Api/UserController.php";
+
+// include the base validation file
+require_once PROJECT_ROOT_PATH . "/Validation/UserValidation.php";

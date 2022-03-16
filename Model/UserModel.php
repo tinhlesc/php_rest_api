@@ -1,5 +1,7 @@
 <?php
 
+    require_once PROJECT_ROOT_PATH . "/Model/Database.php";
+
 class UserModel extends Database
 {
     public function getUsers($limit)
@@ -11,9 +13,18 @@ class UserModel extends Database
     {
         return $this->select("SELECT id, username, firstname, lastname, password FROM user WHERE id = ?", ["i", $id]);
     }
-
     public function deleteUser($id)
     {
         return $this->delete("DELETE FROM user WHERE id = ?", ["i", $id]);
+    }
+
+    public function getUserByUsername($username)
+    {
+        return $this->select("SELECT id, username, firstname, lastname, password FROM user WHERE username = ?", ["s", $username]);
+    }
+
+    public function updateUser($id, $updateData = [])
+    {
+        return $this->update("UPDATE USER SET username = ?, firstname = ?, lastname = ?, password = ? WHERE id = " . $id, ["ssss", $updateData]);
     }
 }

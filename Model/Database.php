@@ -52,8 +52,7 @@ class Database
 
         return $isDeleted;
     }
-
-    private function executeStatement($query = "", $params = [])
+    protected function executeStatement($query = "", $params = [])
     {
         try {
             $stmt = $this->connection->prepare($query);
@@ -63,6 +62,25 @@ class Database
 
             if ($params) {
                 $stmt->bind_param($params[0], $params[1]);
+            }
+
+            $stmt->execute();
+
+            return $stmt;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function update($query = "", $params = [])
+    {
+        try {
+            $stmt = $this->connection->prepare($query);
+            if ($stmt === false) {
+                throw new Exception("Unable to do prepared statement: " . $query);
+            }
+            if ($params) {
+                $stmt->bind_param($params[0], $params[1]['username'], $params[1]['firstname'], $params[1]['lastname'], $params[1]['password']);
             }
             $stmt->execute();
 
