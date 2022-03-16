@@ -1,5 +1,7 @@
 <?php
 
+use Validation\UserValidation;
+
 class UserController extends BaseController
 {
     protected $userModel = null;
@@ -37,6 +39,7 @@ class UserController extends BaseController
         $this->sendOutput(json_encode(['error' => $strErrorDesc]), self::HTTP_INTERNAL_SERVER_ERROR);
     }
 
+
     public function deleteAction()
     {
         $strErrorDesc = 'Something went wrong! Please contact support.';
@@ -54,7 +57,44 @@ class UserController extends BaseController
             if ($isDeleted) {
                 $this->sendOutput(json_encode(['success' => 'Delete successfully.']), self::HTTP_OK);
             }
+        } catch (\Exception $e) {
+            $this->log($e->getMessage());
+            $strErrorDesc = 'Something went wrong! Please contact support.';
+        }
 
+        $this->sendOutput(json_encode(['error' => $strErrorDesc]), self::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+
+    public function createAction()
+    {
+        $result = [
+            'errors' => [],
+            'user' => []
+        ];
+        $strErrorDesc = '';
+        try {
+            $payload = (array) json_decode(file_get_contents('php://input'), true);
+            $payload['existUsername'] = false;
+
+            $findUser = $this->userModel->getUserByUsername($payload['username']);
+            if ($findUser) {
+                $payload['existUsername'] = true;
+                $this->sendOutput(json_encode(['error' => "Username already exists"]), self::HTTP_BAD_REQUEST);
+            }
+
+            $result['errors'] = $this->userValidation->validateInput($payload);
+            if (!empty($result['errors'])) {
+                $this->sendOutput(json_encode(['error' => $result['errors']]), self::HTTP_BAD_REQUEST);
+            }
+            unset($payload['existUsername']);
+
+            $idUser = $this->userModel->createUser($payload);
+
+            if ($idUser) {
+                $result['user'] = $this->userModel->getUserById($idUser);
+                $this->sendOutput(json_encode(['success' => $result['user']]), self::HTTP_CREATED);
+            }
         } catch (\Exception $e) {
             $this->log($e->getMessage());
             $strErrorDesc = 'Something went wrong! Please contact support.';
@@ -98,7 +138,7 @@ class UserController extends BaseController
             $updateUser = $this->userModel->updateUser($idUser, $updateData);
             if ($updateUser) {
                 $result['user'] = $this->userModel->getUserById($idUser);
-                $this->sendOutput(json_encode(['success' => $result['user']]), self::HTTP_OK);
+                $this->sendOutput(json_encode(['success' => $result['user']]), self::HTTP_NO_CONTENT);
             }
         } catch (\Exception $e) {
             $this->log($e->getMessage());

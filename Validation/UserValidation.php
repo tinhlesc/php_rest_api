@@ -1,9 +1,12 @@
 <?php
 
+namespace Validation;
+
 class UserValidation
 {
     /**
-     * Validate input
+     * @param $input
+     * @return array
      */
     public function validateInput($input = []): array
     {
@@ -32,6 +35,8 @@ class UserValidation
 
     /**
      * Validate password
+     * @param $password
+     * @return array
      */
     public function validatePassword($password): array
     {
@@ -46,6 +51,9 @@ class UserValidation
 
     /**
      * Validate username
+     * @param $username
+     * @param $existUsername
+     * @return array
      */
     public function validateUsername($username, $existUsername): array
     {
@@ -63,7 +71,9 @@ class UserValidation
     }
 
     /**
-     * Validate lastname
+     * Validate name
+     * @param $stringName
+     * @return array
      */
     public function validateName($stringName): array
     {

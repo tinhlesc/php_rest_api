@@ -1,6 +1,6 @@
 <?php
 
-    require_once PROJECT_ROOT_PATH . "/Model/Database.php";
+require_once PROJECT_ROOT_PATH . "/Model/Database.php";
 
 class UserModel extends Database
 {
@@ -16,6 +16,10 @@ class UserModel extends Database
     public function deleteUser($id)
     {
         return $this->delete("DELETE FROM user WHERE id = ?", ["i", $id]);
+    }
+    public function createUser($userData)
+    {
+        return$this->insert("INSERT INTO user (username, lastname, firstname, password) VALUES (?,?,?,?)", $userData);
     }
 
     public function getUserByUsername($username)
